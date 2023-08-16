@@ -27,17 +27,16 @@ import androidx.navigation.NavController
 import com.neilb.nonogram.R
 import com.neilb.nonogram.common.GameTypes
 import com.neilb.nonogram.common.NavDestinations
-import com.neilb.nonogram.domain.model.Block
-import com.neilb.nonogram.domain.model.Game
 import com.neilb.nonogram.presentation.ui.lib.custom_game_dialog.CustomGameDialog
 import com.neilb.nonogram.presentation.ui.theme.goldColor
+import com.neilb.nonogram.presentation.ui.theme.greenColor
 import com.neilb.nonogram.presentation.ui.theme.indigoColor
+import com.neilb.nonogram.presentation.ui.theme.orangeColor
 import com.neilb.nonogram.presentation.ui.views.main.MainViewModel
 import com.neilb.nonogram.presentation.ui.views.menu.components.ActionDescriber
 import com.neilb.nonogram.presentation.ui.views.menu.components.MenuButton
 import com.neilb.nonogram.presentation.ui.views.menu.components.Title
 import com.neilb.nonogram.presentation.util.createGame
-import com.neilb.nonogram.presentation.util.generateRandomColor
 
 @Composable
 fun MenuScreen(
@@ -56,6 +55,20 @@ fun MenuScreen(
             mainViewModel.createGame(it)
             navController.navigate(NavDestinations.MAIN_SCREEN)
         }
+    )
+
+    var createYourGameDialogVisibility by remember { mutableStateOf(false) }
+
+    CustomGameDialog(
+        visibility = createYourGameDialogVisibility,
+        dismissDialog = { createYourGameDialogVisibility = false },
+        title = stringResource(id = R.string.create_your_nonogram),
+        context = LocalContext.current,
+        onSubmit = {
+            mainViewModel.createGame(it, saveLocally = false)
+            navController.navigate(NavDestinations.CREATE_NONOGRAM_SCREEN)
+        },
+        emptyTable = true,
     )
 
     Column(
@@ -112,19 +125,19 @@ fun MenuScreen(
         MenuButton(
             icon = Icons.Default.Public,
             text = stringResource(id = R.string.public_collections),
-            backgroundColor = Color(0xff09ce4b),
+            backgroundColor = greenColor,
             textColor = Color.White
         ) {
-
+            navController.navigate("${NavDestinations.COLLECTIONS_SCREEN}/public")
         }
 
         MenuButton(
             icon = Icons.Default.CollectionsBookmark,
             text = stringResource(id = R.string.your_collections),
-            backgroundColor = Color(0xFFF84C16),
+            backgroundColor = orangeColor,
             textColor = Color.White
         ) {
-
+            navController.navigate("${NavDestinations.COLLECTIONS_SCREEN}/own")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -137,7 +150,7 @@ fun MenuScreen(
             backgroundColor = indigoColor,
             textColor = Color.White
         ) {
-
+            createYourGameDialogVisibility = true
         }
 
         Spacer(modifier = Modifier.height(32.dp))

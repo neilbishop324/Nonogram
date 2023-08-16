@@ -28,17 +28,22 @@ import com.neilb.nonogram.domain.model.Block
 import com.neilb.nonogram.domain.model.Game
 import com.neilb.nonogram.presentation.ui.views.main.MainViewModel
 import com.neilb.nonogram.presentation.util.getColorsDistribution
+import com.neilb.nonogram.presentation.util.getOppositeColor
 
 @Composable
 fun GameView(
     modifier: Modifier = Modifier,
     game: Game,
     mainViewModel: MainViewModel,
-    onLevelFailed: () -> Unit,
-    onLevelFinished: () -> Unit,
+    onLevelFailed: (() -> Unit)? = null,
+    onLevelFinished: (() -> Unit)? = null,
+    table: List<List<Block>>? = null,
+    onClickToCell: ((Int, Int) -> Unit)? = null
 ) {
 
-    val table: List<List<Block>> by mainViewModel.table.observeAsState(arrayListOf())
+    val tableInState: List<List<Block>> by mainViewModel.table.observeAsState(arrayListOf())
+    val tableUI = table ?: tableInState
+
     val configuration = LocalConfiguration.current
 
     val screenWidth = configuration.screenWidthDp.dp - 16.dp
@@ -72,7 +77,7 @@ fun GameView(
                             ) {
                                 Text(
                                     text = colorDistribution[it].first.toString(),
-                                    color = Color.White,
+                                    color = getOppositeColor(colorDistribution[it].second ?: Color.Black),
                                     fontSize = 12.sp
                                 )
                             }
@@ -108,7 +113,7 @@ fun GameView(
                                 ) {
                                     Text(
                                         text = colorDistribution[it].first.toString(),
-                                        color = Color.White,
+                                        color = getOppositeColor(colorDistribution[it].second ?: Color.Black),
                                         fontSize = 12.sp
                                     )
                                 }
@@ -123,8 +128,8 @@ fun GameView(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         repeat(game.size) { x ->
-                            val color = when (table[y][x].status) {
-                                Block.coloured -> table[y][x].color!!
+                            val color = when (tableUI[y][x].status) {
+                                Block.coloured -> tableUI[y][x].color!!
                                 Block.black -> Color.Black
                                 else -> Color.White
                             }
@@ -134,16 +139,18 @@ fun GameView(
                                     .background(color)
                                     .border(1.dp, Color.Black)
                                     .clickable {
-                                        mainViewModel.clickCell(
-                                            x = x,
-                                            y = y,
-                                            onFailedGame = onLevelFailed,
-                                            onFinishedGame = onLevelFinished
-                                        )
+                                        onClickToCell?.invoke(x, y) ?: run {
+                                            mainViewModel.clickCell(
+                                                x = x,
+                                                y = y,
+                                                onFailedGame = { onLevelFailed?.invoke() },
+                                                onFinishedGame = { onLevelFinished?.invoke() }
+                                            )
+                                        }
                                     },
                                 contentAlignment = Alignment.Center
                             ) {
-                                if (table[y][x].status == Block.empty) {
+                                if (tableUI[y][x].status == Block.empty) {
                                     Icon(
                                         imageVector = Icons.Default.Close,
                                         contentDescription = null,

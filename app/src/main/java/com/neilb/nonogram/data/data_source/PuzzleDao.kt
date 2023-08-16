@@ -12,11 +12,17 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PuzzleDao {
 
-    @Query("SELECT * FROM puzzle WHERE id LIKE 'public%'")
-    fun getPublicPuzzles(): Flow<List<Game>>
+    @Query("SELECT * FROM puzzle WHERE id LIKE 'public%' LIMIT :limit OFFSET :offset")
+    fun getPublicPuzzles(limit: Int, offset: Int): Flow<List<Game>>
 
-    @Query("SELECT * FROM puzzle WHERE id LIKE 'own%'")
-    fun getOwnPuzzles(): Flow<List<Game>>
+    @Query("SELECT COUNT(*) FROM puzzle WHERE id LIKE 'public%'")
+    suspend fun getPublicPuzzleSize(): Int?
+
+    @Query("SELECT * FROM puzzle WHERE id LIKE 'own%' LIMIT :limit OFFSET :offset")
+    fun getOwnPuzzles(limit: Int, offset: Int): Flow<List<Game>>
+
+    @Query("SELECT COUNT(*) FROM puzzle WHERE id LIKE 'own%'")
+    suspend fun getOwnPuzzleSize(): Int?
 
     @Query("SELECT * FROM puzzle WHERE id = :id")
     suspend fun getPuzzleById(id: String): Game?

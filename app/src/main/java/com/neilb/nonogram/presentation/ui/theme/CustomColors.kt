@@ -20,3 +20,7 @@ val helperColor: Color
 val darkButtonColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.White else Color(0xFF212121)
+
+val puzzleCardColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFF212121) else Color.White

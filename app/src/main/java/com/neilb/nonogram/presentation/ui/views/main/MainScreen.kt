@@ -4,6 +4,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,18 +21,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.neilb.nonogram.R
 import com.neilb.nonogram.domain.model.Block
 import com.neilb.nonogram.domain.model.Game
-import com.neilb.nonogram.presentation.ui.lib.custom_game_dialog.CustomGameDialog
 import com.neilb.nonogram.presentation.ui.lib.game_end_dialog.GameEndDialog
 import com.neilb.nonogram.presentation.ui.views.error.ErrorPage
 import com.neilb.nonogram.presentation.ui.views.main.components.BlockSelector
 import com.neilb.nonogram.presentation.ui.views.main.components.GameView
 import com.neilb.nonogram.presentation.ui.views.main.components.RemainingLivesView
+import com.neilb.nonogram.presentation.util.createGame
 import com.neilb.nonogram.presentation.util.getGameTitle
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,6 +52,8 @@ fun MainScreen(
         return
     }
 
+    var moreExpanded by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -57,10 +64,44 @@ fun MainScreen(
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(imageVector = Icons.Default.ArrowBackIos, contentDescription = null)
                     }
+                },
+                actions = {
+                    IconButton(onClick = { moreExpanded = true }) {
+                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
+                    }
+                    DropdownMenu(
+                        expanded = moreExpanded,
+                        onDismissRequest = { moreExpanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    stringResource(id = R.string.new_game),
+                                    style = TextStyle(fontSize = 16.sp)
+                                )
+                            },
+                            onClick = {
+                                mainViewModel.createGame(createGame(mainViewModel.game.value!!.id, mainViewModel.game.value!!.type))
+                                moreExpanded = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    stringResource(id = R.string.restart),
+                                    style = TextStyle(fontSize = 16.sp)
+                                )
+                            },
+                            onClick = {
+                                mainViewModel.restartGame()
+                                moreExpanded = false
+                            }
+                        )
+                    }
                 }
             )
         }
-    ) {
+    ) { paddingValues ->
 
         var showLevelCompletedDialog by remember { mutableStateOf(false) }
         var showLevelFailedDialog by remember { mutableStateOf(false) }
@@ -68,7 +109,7 @@ fun MainScreen(
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(paddingValues)
         ) {
 
             val (remainingLivesView, gameView, blockSelector) = createRefs()
@@ -107,8 +148,10 @@ fun MainScreen(
                     end.linkTo(parent.end)
                 },
                 game = game!!,
-                mainViewModel = mainViewModel,
-                selectedBlock = selectedBlock
+                selectedBlock = selectedBlock,
+                updateSelectedBlock = {
+                    mainViewModel.updateSelectedBlock(it)
+                }
             )
 
         }

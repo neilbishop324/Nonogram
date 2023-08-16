@@ -50,6 +50,7 @@ fun CustomGameDialog(
     title: String,
     context: Context,
     onSubmit: (Game) -> Unit,
+    emptyTable: Boolean = false,
 ) {
     if (visibility) {
         Dialog(
@@ -76,10 +77,10 @@ fun CustomGameDialog(
                 ) {
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth(.9f),
+                            .fillMaxWidth(.92f),
                     ) {
                         Column(
-                            Modifier.padding(16.dp)
+                            Modifier.padding(20.dp)
                         ) {
                             Text(
                                 text = title,
@@ -168,7 +169,8 @@ fun CustomGameDialog(
                                         id = if (typeSelectedOption == context.getString(R.string.black_and_white)) GameTypes.blackAndWhite else GameTypes.coloured,
                                         type = if (typeSelectedOption == context.getString(R.string.black_and_white)) MainViewModel.blackAndWhite else MainViewModel.coloured,
                                         size = sizeSelectedOption.split("x")[0].toInt(),
-                                        numberOfLives = numberOfLives.toInt()
+                                        numberOfLives = numberOfLives.toInt(),
+                                        emptyTable = emptyTable
                                     ))
                                 }
                             }

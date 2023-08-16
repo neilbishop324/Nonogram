@@ -5,7 +5,6 @@ import android.content.Context.VIBRATOR_SERVICE
 import android.os.Build
 import android.os.Vibrator
 import android.os.VibratorManager
-import androidx.core.content.ContextCompat.getSystemService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

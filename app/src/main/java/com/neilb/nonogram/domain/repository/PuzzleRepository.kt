@@ -6,9 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface PuzzleRepository {
 
-    fun getPublicPuzzles(): Flow<List<Game>>
+    fun getPublicPuzzles(limit: Int, skip: Int): Flow<List<Game>>
 
-    fun getOwnPuzzles(): Flow<List<Game>>
+    fun getOwnPuzzles(limit: Int, skip: Int): Flow<List<Game>>
 
     suspend fun getPuzzleById(id: String): Game?
 
@@ -21,5 +21,9 @@ interface PuzzleRepository {
     suspend fun getProgressById(id: String): ProgressInGame?
 
     suspend fun insertProgress(progressInGame: ProgressInGame)
+
+    suspend fun getPublicPuzzleSize(): Int?
+
+    suspend fun getOwnPuzzleSize(): Int?
 
 }

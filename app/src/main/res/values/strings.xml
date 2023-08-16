@@ -23,4 +23,22 @@
     <string name="create_a_custom_game">Create a Custom Game</string>
     <string name="number_of_lives">Number Of Lives</string>
     <string name="invalid_number_of_lives">Invalid number of lives!</string>
+    <string name="add_color">Add Color</string>
+    <string name="select_a_color">Select a Color</string>
+    <string name="your_color">Your Color</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="share_your_nonogram">Share your Nonogram</string>
+    <string name="share_your_nonogram_question">Do you want to share your Nonogram publicly?</string>
+    <string name="share_publicly">Share Publicly</string>
+    <string name="add_to_your_collection">Add To Your Collection</string>
+    <string name="check_connection">Check your connection and try again!</string>
+    <string name="maker_name">Maker Name</string>
+    <string name="fill_it_if_you_want_to_share">Fill it if you want to share publicly.</string>
+    <string name="maker_name_cant_be_empty">Maker name cannot be empty!</string>
+    <string name="saved_in_your_collection">Saved in your collection!</string>
+    <string name="shared_publicly">Shared publicly!</string>
+    <string name="no_puzzle_to_display">No puzzle to display</string>
+    <string name="you_are_offline">You are currently offline</string>
+    <string name="delete">Delete</string>
 </resources>

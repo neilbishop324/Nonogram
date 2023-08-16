@@ -10,10 +10,10 @@ import androidx.lifecycle.viewModelScope
 import com.neilb.nonogram.domain.model.Block
 import com.neilb.nonogram.domain.model.Game
 import com.neilb.nonogram.domain.model.ProgressInGame
-import com.neilb.nonogram.domain.use_case.AddProgress
-import com.neilb.nonogram.domain.use_case.AddPuzzle
-import com.neilb.nonogram.domain.use_case.GetProgressById
-import com.neilb.nonogram.domain.use_case.GetPuzzleById
+import com.neilb.nonogram.domain.use_case.local.AddProgress
+import com.neilb.nonogram.domain.use_case.local.AddPuzzleLocally
+import com.neilb.nonogram.domain.use_case.local.GetProgressById
+import com.neilb.nonogram.domain.use_case.local.GetPuzzleById
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val vibratorService: Vibrator,
-    private val addPuzzle: AddPuzzle,
+    private val addPuzzleLocally: AddPuzzleLocally,
     private val addProgress: AddProgress,
     private val getProgressById: GetProgressById,
     private val getPuzzleById: GetPuzzleById
@@ -103,13 +103,15 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun createGame(game: Game) {
+    fun createGame(game: Game, saveLocally: Boolean = true) {
         viewModelScope.launch {
             updateGame(game)
             resetTable()
             updateRemainingLives(game.numberOfLives)
-            addPuzzle(game)
-            addProgress(ProgressInGame(game.id, _table.value!!, game.numberOfLives))
+            if (saveLocally) {
+                addPuzzleLocally(game)
+                addProgress(ProgressInGame(game.id, _table.value!!, game.numberOfLives))
+            }
         }
     }
 
@@ -170,7 +172,6 @@ class MainViewModel @Inject constructor(
             }
 
             addProgress(ProgressInGame(_game.value!!.id, _table.value!!, _remainingLives.value!!))
-
         }
     }
 

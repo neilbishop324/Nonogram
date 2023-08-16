@@ -94,6 +94,11 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.gson)
 
+    //retrofit
+    implementation(libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.logging.interceptor)
+
 }
 
 kapt {

@@ -13,12 +13,12 @@ class PuzzleRepositoryImpl @Inject constructor(
 
     private val puzzleDao = puzzleDatabase.puzzleDao
 
-    override fun getPublicPuzzles(): Flow<List<Game>> {
-        return puzzleDao.getPublicPuzzles()
+    override fun getPublicPuzzles(limit: Int, skip: Int): Flow<List<Game>> {
+        return puzzleDao.getPublicPuzzles(limit, skip)
     }
 
-    override fun getOwnPuzzles(): Flow<List<Game>> {
-        return puzzleDao.getOwnPuzzles()
+    override fun getOwnPuzzles(limit: Int, skip: Int): Flow<List<Game>> {
+        return puzzleDao.getOwnPuzzles(limit, skip)
     }
 
     override suspend fun getPuzzleById(id: String): Game? {
@@ -43,5 +43,13 @@ class PuzzleRepositoryImpl @Inject constructor(
 
     override suspend fun insertProgress(progressInGame: ProgressInGame) {
         puzzleDao.insertProgress(progressInGame)
+    }
+
+    override suspend fun getPublicPuzzleSize(): Int? {
+        return puzzleDao.getPublicPuzzleSize()
+    }
+
+    override suspend fun getOwnPuzzleSize(): Int? {
+        return puzzleDao.getOwnPuzzleSize()
     }
 }
